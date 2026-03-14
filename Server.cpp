@@ -10,7 +10,6 @@
 #include <sstream>
 #include <vector>
 #include <unistd.h> // close(), read(), write()
-#include <bits/locale_facets_nonio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -79,7 +78,7 @@ void Server::handle_client(int client_socket) {
         // the loop
         if (read(client_socket, buffer, 1024) <= 0) {
             std::cout << "read failed" << std::endl;
-            return;
+            break;
         }
 
 
@@ -97,7 +96,7 @@ void Server::handle_client(int client_socket) {
             std:: string key, value;
             iss >> key >> value;
             db.set(key, value);
-            response = "OK/n";
+            response = "OK\n";
         }
 
         else if (command == "GET") {
@@ -105,23 +104,21 @@ void Server::handle_client(int client_socket) {
             iss >> key;
             auto result = db.get(key);
             if (result.has_value()) {
-                response = result.value() + "/n";
+                response = result.value() + "\n";
             }
             else {
-                response = "NOT FOUND/n";
+                response = "NOT FOUND\n";
             }
 
         }
         else if (command == "DEL") {
             std:: string key;
             iss >> key;
-            auto result = db.get(key);
-            if (result.has_value()) {
-                db.del(key);
-                response = "Value deleted/n";
+            if (db.del(key)) {
+                response = "OK/n";
             }
             else {
-                response = "KEY NOT FOUND/n";
+                response = "NOT FOUND/n";
             }
         }
 
