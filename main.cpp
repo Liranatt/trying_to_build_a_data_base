@@ -4,7 +4,7 @@
 #include <thread>
 #include <string>
 #include "KVStore.h"
-
+#include "Server.h"
 void writer_task(KVStore& db, int thread_id) { // a function that would run inside about a thread of a writer
     std::string key = "user_" + std::to_string(thread_id);
     std::string value = "data_" + std::to_string(thread_id);
@@ -74,5 +74,14 @@ int main() {
     else {
         std::cout << "Failed: " << missing_keys << " keys were lost due to race conditions " << std::endl;
     }
+
+    std::cout << "--- Booting up In-Memory Database Server ---" << std::endl;
+
+
+    // 2. אתחול השרת על פורט 8080
+    Server server(8080, db);
+
+    // 3. התחלת האזנה (פונקציה חוסמת)
+    server.start();
     return 0;
 }

@@ -12,6 +12,7 @@
 #include <unistd.h> // close(), read(), write()
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <cstring>
 
 Server::Server(int port, KVStore &db) : port (port), db (db), server_fd(-1){
     //TODO: creating the socket, use socket() with SOCK_STREAM and AF_INET
