@@ -20,6 +20,13 @@ Server::Server(int port, KVStore &db) : port (port), db (db), server_fd(-1){
         std::cout << "Error creating socket" << std::endl;
         return;
     }
+
+    int opt = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        std::cout << "setsockopt failed" << std::endl;
+        return;
+    }
+
     struct sockaddr_in address{};
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
